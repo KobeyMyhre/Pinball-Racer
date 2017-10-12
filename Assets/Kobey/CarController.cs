@@ -16,10 +16,29 @@ public class CarController : MonoBehaviour {
     public float maxReverseTorque;
     Rigidbody rb;
     public int Gear = 0;
-	// Use this for initialization
-	void Start ()
+    public float speed;
+
+    WheelFrictionCurve DriftFriction;
+    WheelFrictionCurve DefaultFriction;
+
+
+    // Use this for initialization
+    void Start ()
     {
-        rb = GetComponent<Rigidbody>();
+        foreach (AxleInfo axleInfo in axleInfo)
+        {
+            if(axleInfo.motor)
+            {
+                DefaultFriction = axleInfo.LeftWheel.forwardFriction;
+                DriftFriction = axleInfo.LeftWheel.forwardFriction;
+            }
+        }
+        DriftFriction.stiffness = 2;
+        DriftFriction.extremumSlip = 1.4f;
+        DriftFriction.extremumValue = 1.3f;
+        DriftFriction.asymptoteSlip = .4f;
+        DriftFriction.asymptoteValue = .5f;
+            rb = GetComponent<Rigidbody>();
 	}
     public void ApplyWheelRotation(WheelCollider collider)
     {
@@ -55,7 +74,7 @@ public class CarController : MonoBehaviour {
     void FixedUpdate ()
     {
         
-
+       
         //float Motor = maxMotorTorque * Input.GetAxis("Vertical");
         //float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
 
@@ -75,11 +94,42 @@ public class CarController : MonoBehaviour {
             }
             if(axleInfo.motor)
             {
+                if (state.Buttons.RightShoulder == ButtonState.Pressed)
+                {
+
+                    axleInfo.LeftWheel.forwardFriction = DriftFriction;
+                    axleInfo.RightWheel.forwardFriction = DriftFriction;
+                    maxBrakingTorque = rb.mass * rb.velocity.magnitude;
+                    float braker = maxBrakingTorque * state.Triggers.Left;
+
+                    axleInfo.LeftWheel.brakeTorque = braker/2;
+                    axleInfo.RightWheel.brakeTorque = braker/2;
+                }
+                else
+                {
+                    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
+                    axleInfo.RightWheel.forwardFriction = DefaultFriction;
+                }
+
+                //if (state.Triggers.Left >= 0.8f)
+                //{
+
+                //    axleInfo.LeftWheel.forwardFriction = DriftFriction;
+                //    axleInfo.RightWheel.forwardFriction = DriftFriction;
+                //}
+                //else
+                //{
+                //    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
+                //    axleInfo.RightWheel.forwardFriction = DefaultFriction;
+                //}
+                
                 if (Gear == 0)
                 {
-                    axleInfo.LeftWheel.motorTorque = Motor;
-                    axleInfo.RightWheel.motorTorque = Motor;
+                    
+                    axleInfo.LeftWheel.motorTorque = Motor * speed;
+                    axleInfo.RightWheel.motorTorque = Motor * speed;
                 }
+                
                 if (Gear == 1)
                 {
                     axleInfo.LeftWheel.motorTorque = reverse;
@@ -87,8 +137,8 @@ public class CarController : MonoBehaviour {
                 }
             }
 
-          
            
+
             maxBrakingTorque = rb.mass * rb.velocity.magnitude;
             float brake = maxBrakingTorque * state.Triggers.Left;
 
@@ -98,8 +148,8 @@ public class CarController : MonoBehaviour {
 
            
 
-            ApplyWheelRotation(axleInfo.LeftWheel);
-            ApplyWheelRotation(axleInfo.RightWheel);
+            //ApplyWheelRotation(axleInfo.LeftWheel);
+            //ApplyWheelRotation(axleInfo.RightWheel);
         }
 
 	}
