@@ -10,24 +10,57 @@ public class ShipControler : MonoBehaviour {
 
     public float maxMotorTorque;
     public float maxSteeringAngle;
-    private float maxBrakingTorque;
-    public float maxReverseTorque;
+    
+    public float applyDrag;
     Rigidbody rb;
     public int Gear = 0;
-    float maxRot;
-
+    public float Offset;
+    public float RotOffset;
+    Vector3 wantedPos;
     public float drift;
 
     // Use this for initialization
     void Start ()
     {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 50))
+        {
+            if (hit.collider.tag == "floor")
+            {
+                Offset = (transform.position.y - hit.collider.transform.position.y);
+                
+            }
+
+        }
         rb = GetComponent<Rigidbody>();
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-        prev = state;
+    float AngleBetween(Vector3 hitPos, Vector3 Tpos)
+    {
+
+        return Mathf.Cos(Vector3.Dot(hitPos, Tpos) / (hitPos.magnitude * Tpos.magnitude));
+
+       
+    }
+
+    // Update is called once per frame
+    void Update ()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 50))
+        {
+            if (hit.collider.tag == "floor")
+            {
+                wantedPos = new Vector3(transform.position.x, hit.point.y + Offset, transform.position.z);
+                RotOffset = hit.collider.transform.rotation.x;
+              // transform.LookAt(hit.collider.transform.up * Offset);
+               
+            }
+           
+        }
+        
+    
+    prev = state;
         state = GamePad.GetState(Pidx);
 
         if (prev.Buttons.LeftShoulder == ButtonState.Released && state.Buttons.LeftShoulder == ButtonState.Pressed)
@@ -40,8 +73,7 @@ public class ShipControler : MonoBehaviour {
         }
         Gear = Mathf.Clamp(Gear, 0, 1);
     }
-    float Rot = 0;
-
+    
 
     Vector3 ForwardVel()
     {
@@ -54,44 +86,35 @@ public class ShipControler : MonoBehaviour {
 
     void FixedUpdate()
     {
+       
 
 
-        //float Motor = maxMotorTorque * Input.GetAxis("Vertical");
-        //float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
+        float y = Mathf.Lerp(  transform.position.y, wantedPos.y, Time.deltaTime * 1.2f);
+        transform.position = new Vector3(transform.position.x, y, transform.position.z);
+        
 
         float Motor = maxMotorTorque * state.Triggers.Right;
         float steering = maxSteeringAngle * state.ThumbSticks.Left.X;
-        float reverse = maxReverseTorque * rb.velocity.magnitude;
+       
 
-        maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-        float brake = maxBrakingTorque * -state.Triggers.Left;
-
-        if(Gear == 1)
-        {
-            rb.AddForce(transform.forward * -Motor);
-        }
-        if(Gear == 0)
-        {
-            rb.AddForce(transform.forward * Motor);
-        }
-        if(state.Triggers.Left ==1)
-        {
-            rb.AddForce(transform.forward * brake);
-        }
-
-        Rot += steering;
-        Rot = Mathf.Clamp(Rot, transform.forward.y - 45, transform.forward.y + 45);
-        Quaternion thing = Quaternion.Euler( new Vector3(transform.localEulerAngles.x,Rot, transform.localEulerAngles.z));
         
-        rb.rotation = thing;
 
+        
+        if(state.Triggers.Left >= 0.9)
+        {
+            rb.drag += applyDrag * Time.deltaTime;
+        }
+        else { rb.drag = 0; }
+
+       
+        rb.AddForce(transform.forward * Motor);
         rb.velocity = ForwardVel() + RightVel() * drift;
-        rb.angularVelocity = new Vector3( 0,steering,0);
+        rb.angularVelocity = new Vector3(0,steering,0);
         
 
 
 
-       // rb.MoveRotation()
+       
 
         
 

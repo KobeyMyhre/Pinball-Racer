@@ -17,6 +17,7 @@ public class CarController : MonoBehaviour {
     Rigidbody rb;
     public int Gear = 0;
     public float speed;
+    public float AntiRool = 2000;
 
     WheelFrictionCurve DriftFriction;
     WheelFrictionCurve DefaultFriction;
@@ -38,7 +39,7 @@ public class CarController : MonoBehaviour {
         DriftFriction.extremumValue = 1.3f;
         DriftFriction.asymptoteSlip = .4f;
         DriftFriction.asymptoteValue = .5f;
-            rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
 	}
     public void ApplyWheelRotation(WheelCollider collider)
     {
@@ -83,6 +84,7 @@ public class CarController : MonoBehaviour {
         float reverse = maxReverseTorque * -state.Triggers.Right;
         foreach (AxleInfo axleInfo in axleInfo)
         {
+            DoRollBar(axleInfo.LeftWheel, axleInfo.RightWheel);
             if(axleInfo.steering)
             {
                
@@ -99,11 +101,11 @@ public class CarController : MonoBehaviour {
 
                     axleInfo.LeftWheel.forwardFriction = DriftFriction;
                     axleInfo.RightWheel.forwardFriction = DriftFriction;
-                    maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-                    float braker = maxBrakingTorque * state.Triggers.Left;
+                    //maxBrakingTorque = rb.mass * rb.velocity.magnitude;
+                    //float braker = maxBrakingTorque * state.Triggers.Left;
 
-                    axleInfo.LeftWheel.brakeTorque = braker/2;
-                    axleInfo.RightWheel.brakeTorque = braker/2;
+                    //axleInfo.LeftWheel.brakeTorque = braker/2;
+                    //axleInfo.RightWheel.brakeTorque = braker/2;
                 }
                 else
                 {
@@ -137,13 +139,13 @@ public class CarController : MonoBehaviour {
                 }
             }
 
-           
 
-            maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-            float brake = maxBrakingTorque * state.Triggers.Left;
 
-            axleInfo.LeftWheel.brakeTorque = brake;
-            axleInfo.RightWheel.brakeTorque = brake;
+            //maxBrakingTorque = rb.mass * rb.velocity.magnitude;
+            //float brake = maxBrakingTorque * state.Triggers.Left;
+
+            //axleInfo.LeftWheel.brakeTorque = brake;
+            //axleInfo.RightWheel.brakeTorque = brake;
             
 
            
@@ -153,6 +155,35 @@ public class CarController : MonoBehaviour {
         }
 
 	}
+
+    void DoRollBar(WheelCollider wheelL, WheelCollider wheelR)
+    {
+        WheelHit hit;
+        float travelL = 1;
+        float travelR = 1;
+
+        bool groundedL = wheelL.GetGroundHit(out hit);
+        if (groundedL)
+        {
+            travelL = (-wheelL.transform.InverseTransformPoint(hit.point).y - wheelL.radius) / wheelL.suspensionDistance;
+        }
+        bool groundedR = wheelR.GetGroundHit(out hit);
+        if (groundedR)
+        {
+            travelR = (-wheelR.transform.InverseTransformPoint(hit.point).y - wheelR.radius) / wheelR.suspensionDistance;
+        }
+        float antiRollForce = (travelL - travelR) * AntiRool;
+
+        if (groundedL)
+        {
+            rb.AddForceAtPosition(wheelL.transform.up * -antiRollForce, wheelL.transform.position);
+        }
+        if (groundedR)
+        {
+            rb.AddForceAtPosition(wheelR.transform.up * -antiRollForce, wheelR.transform.position);
+        }
+
+    }
 
     [System.Serializable]
     public class AxleInfo
