@@ -53,14 +53,15 @@ public class ShipControler : MonoBehaviour {
             {
                 wantedPos = new Vector3(transform.position.x, hit.point.y + Offset, transform.position.z);
                 RotOffset = hit.collider.transform.rotation.x;
-              // transform.LookAt(hit.collider.transform.up * Offset);
-               
+                //transform.forward = (transform.position - hit.point).normalized;
+                // transform.LookAt(hit.collider.transform.up * Offset);
+
             }
-           
+
         }
-        
-    
-    prev = state;
+
+
+        prev = state;
         state = GamePad.GetState(Pidx);
 
         if (prev.Buttons.LeftShoulder == ButtonState.Released && state.Buttons.LeftShoulder == ButtonState.Pressed)
