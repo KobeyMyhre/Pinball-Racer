@@ -144,18 +144,15 @@ public class CarController : MonoBehaviour {
             if (state.Triggers.Left >= 0.8f)
             {
 
-                rb.drag += 1;
-            }
-            else
-            {
-                rb.drag = 0;
-            }
+                maxBrakingTorque = rb.mass * rb.velocity.magnitude;
+                brake = maxBrakingTorque * state.Triggers.Left;
 
-            maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-            brake = maxBrakingTorque * state.Triggers.Left;
+                axleInfo.LeftWheel.brakeTorque = brake * 2;
+                axleInfo.RightWheel.brakeTorque = brake * 2;
+            }
+            
 
-            axleInfo.LeftWheel.brakeTorque = brake * 2;
-            axleInfo.RightWheel.brakeTorque = brake * 2;
+           
 
 
 
