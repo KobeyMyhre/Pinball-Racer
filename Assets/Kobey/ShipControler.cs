@@ -15,6 +15,9 @@ public class ShipControler : MonoBehaviour {
     Rigidbody rb;
     public int Gear = 0;
     float maxRot;
+
+    public float drift;
+
     // Use this for initialization
     void Start ()
     {
@@ -37,6 +40,17 @@ public class ShipControler : MonoBehaviour {
         }
         Gear = Mathf.Clamp(Gear, 0, 1);
     }
+    float Rot = 0;
+
+
+    Vector3 ForwardVel()
+    {
+        return transform.forward * Vector3.Dot(rb.velocity, transform.forward);
+    }
+    Vector3 RightVel()
+    {
+        return transform.right * Vector3.Dot(rb.velocity, transform.right);
+    }
 
     void FixedUpdate()
     {
@@ -47,10 +61,10 @@ public class ShipControler : MonoBehaviour {
 
         float Motor = maxMotorTorque * state.Triggers.Right;
         float steering = maxSteeringAngle * state.ThumbSticks.Left.X;
-        float reverse = maxReverseTorque * -state.Triggers.Right;
+        float reverse = maxReverseTorque * rb.velocity.magnitude;
 
         maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-        float brake = maxBrakingTorque * state.Triggers.Left;
+        float brake = maxBrakingTorque * -state.Triggers.Left;
 
         if(Gear == 1)
         {
@@ -60,12 +74,22 @@ public class ShipControler : MonoBehaviour {
         {
             rb.AddForce(transform.forward * Motor);
         }
-        rb.AddForce(transform.forward * brake);
+        if(state.Triggers.Left ==1)
+        {
+            rb.AddForce(transform.forward * brake);
+        }
 
-        maxRot += steering;
-        maxRot = Mathf.Clamp(maxRot, -45, 45);
+        Rot += steering;
+        Rot = Mathf.Clamp(Rot, transform.forward.y - 45, transform.forward.y + 45);
+        Quaternion thing = Quaternion.Euler( new Vector3(transform.localEulerAngles.x,Rot, transform.localEulerAngles.z));
         
-        transform.Rotate(0,maxRot , 0);
+        rb.rotation = thing;
+
+        rb.velocity = ForwardVel() + RightVel() * drift;
+        rb.angularVelocity = new Vector3( 0,steering,0);
+        
+
+
 
        // rb.MoveRotation()
 
