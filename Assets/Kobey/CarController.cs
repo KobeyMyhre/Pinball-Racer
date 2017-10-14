@@ -22,7 +22,7 @@ public class CarController : MonoBehaviour {
     WheelFrictionCurve DriftFriction;
     WheelFrictionCurve DefaultFriction;
 
-
+    public float Motor;
     // Use this for initialization
     void Start ()
     {
@@ -44,13 +44,14 @@ public class CarController : MonoBehaviour {
     }
     public void ApplyWheelRotation(WheelCollider collider)
     {
-        Transform visualWheel = collider.transform;
+
+        Transform visualWheel = collider.transform.GetChild(0);
 
         Vector3 pos;
         Quaternion rot;
         collider.GetWorldPose(out pos, out rot);
-        //visualWheel.transform.position = pos;
-        visualWheel.transform.rotation = rot;
+        visualWheel.transform.position = pos;
+        visualWheel.transform.localRotation = Quaternion.Euler(collider.rpm * Mathf.PI, collider.steerAngle, 0);
     }
 
 
@@ -80,58 +81,59 @@ public class CarController : MonoBehaviour {
         //float Motor = maxMotorTorque * Input.GetAxis("Vertical");
         //float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
 
-        float Motor = maxMotorTorque * state.Triggers.Right;
+        Motor = maxMotorTorque * state.Triggers.Right;
         float steering = maxSteeringAngle * state.ThumbSticks.Left.X;
         float reverse = maxReverseTorque * -state.Triggers.Right;
+        maxBrakingTorque = rb.mass * rb.velocity.magnitude;
+        brake = maxBrakingTorque * state.Triggers.Left;
         foreach (AxleInfo axleInfo in axleInfo)
         {
+            
             DoRollBar(axleInfo.LeftWheel, axleInfo.RightWheel);
-            if(axleInfo.steering)
+            if (state.Triggers.Left == 1)
+            {
+                
+                axleInfo.LeftWheel.brakeTorque = brake * 50;
+                axleInfo.RightWheel.brakeTorque = brake * 50;
+                if (axleInfo.motor)
+                {
+
+                    axleInfo.DoTrail(true);
+                }
+        }
+            else
+            {
+                if (axleInfo.motor)
+                {
+                    axleInfo.DoTrail(false);
+
+                }
+                axleInfo.LeftWheel.brakeTorque = 0;
+                axleInfo.RightWheel.brakeTorque = 0;
+            }
+            if (axleInfo.steering)
             {
                
-                    axleInfo.LeftWheel.steerAngle = steering;
-                    axleInfo.RightWheel.steerAngle = steering;
+                axleInfo.LeftWheel.steerAngle = steering;
+                axleInfo.RightWheel.steerAngle = steering;
                
               
                 
             }
             if(axleInfo.motor)
             {
-                //if (state.Buttons.RightShoulder == ButtonState.Pressed)
-                //{
 
-                //    axleInfo.LeftWheel.forwardFriction = DriftFriction;
-                //    axleInfo.RightWheel.forwardFriction = DriftFriction;
-                //    maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-                //    float braker = maxBrakingTorque * state.Triggers.Left;
+                
 
-                //    axleInfo.LeftWheel.brakeTorque = braker / 2;
-                //    axleInfo.RightWheel.brakeTorque = braker / 2;
-                //}
-                //else
-                //{
-                //    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
-                //    axleInfo.RightWheel.forwardFriction = DefaultFriction;
-                //}
 
-                //if (state.Triggers.Left >= 0.8f)
-                //{
 
-                //    axleInfo.LeftWheel.forwardFriction = DriftFriction;
-                //    axleInfo.RightWheel.forwardFriction = DriftFriction;
-                //}
-                //else
-                //{
-                //    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
-                //    axleInfo.RightWheel.forwardFriction = DefaultFriction;
-                //}
 
                 if (Gear == 0)
                 {
                     
-                    axleInfo.LeftWheel.motorTorque = Motor * speed;
-                    axleInfo.RightWheel.motorTorque = Motor * speed;
-                    Debug.Log(axleInfo.RightWheel.motorTorque);
+                    axleInfo.LeftWheel.motorTorque = Motor;
+                    axleInfo.RightWheel.motorTorque = Motor;
+                    
                 }
                 
                 if (Gear == 1)
@@ -140,28 +142,15 @@ public class CarController : MonoBehaviour {
                     axleInfo.RightWheel.motorTorque = reverse;
                 }
             }
-
-            if (state.Triggers.Left >= 0.8f)
-            {
-
-                maxBrakingTorque = rb.mass * rb.velocity.magnitude;
-                brake = maxBrakingTorque * state.Triggers.Left;
-
-                axleInfo.LeftWheel.brakeTorque = brake * 2;
-                axleInfo.RightWheel.brakeTorque = brake * 2;
-            }
             
+            ApplyWheelRotation(axleInfo.LeftWheel);
+            ApplyWheelRotation(axleInfo.RightWheel);
 
-           
-
-
-
-
-            //ApplyWheelRotation(axleInfo.LeftWheel);
-            //ApplyWheelRotation(axleInfo.RightWheel);
         }
 
 	}
+
+
 
     void DoRollBar(WheelCollider wheelL, WheelCollider wheelR)
     {
@@ -195,11 +184,55 @@ public class CarController : MonoBehaviour {
     [System.Serializable]
     public class AxleInfo
     {
+        public TrailRenderer Ltrail;
+        public TrailRenderer Rtrail;
         public WheelCollider LeftWheel;
         public WheelCollider RightWheel;
         public bool motor;
         public bool steering;
+        float timer = 1;
+        public void DoTrail(bool OnOff)
+        {
+            if(OnOff)
+            {
+                timer = 1;
+                if (LeftWheel.isGrounded)
+                {
+                    Ltrail.enabled = true;
+                }
+                else
+                {
+                  
+                    Ltrail.enabled = false;
+                }
+                if (RightWheel.isGrounded)
+                {
+                   
+                    Rtrail.enabled = true;
+                }
+                else
+                {
+                   
+                    Rtrail.enabled = false;
+                }
+            }
+            else
+            {
+                //if(Ltrail.enabled == true)
+                //{
+                //    var SpawnLine = Instantiate(Ltrail);
+                //    SpawnLine.transform.position = Ltrail.transform.localPosition;
 
+
+
+                //    Ltrail.enabled = false;
+                //}
+                Ltrail.enabled = false;
+                Rtrail.enabled = false;
+
+            }
+           
+        }
     }
 
 }
