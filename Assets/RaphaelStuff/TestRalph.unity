@@ -467,10 +467,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 350293794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e068b1f37f93d3e41bc2342847702145, type: 3}
+  m_Script: {fileID: 11500000, guid: 41cca830db65b2647964b9803b7f3291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 2
+  Spring: {fileID: 562810250}
 --- !u!1 &562810250
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,6 +485,7 @@ GameObject:
   - component: {fileID: 562810251}
   - component: {fileID: 562810256}
   - component: {fileID: 562810257}
+  - component: {fileID: 562810258}
   m_Layer: 0
   m_Name: Catipult
   m_TagString: Untagged
@@ -608,6 +609,23 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 99999
+--- !u!114 &562810258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 562810250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e068b1f37f93d3e41bc2342847702145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 100
+  StopPoint: 0
+  RePoint: 90
+  rot: 0
+  check: 0
+  fired: 0
 --- !u!1 &1346944434
 GameObject:
   m_ObjectHideFlags: 0

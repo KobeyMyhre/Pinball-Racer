@@ -7,13 +7,13 @@ public class CatipultEvent : MonoBehaviour {
     public float force = 2;
     public float StopPoint = 0.0F;
     public float RePoint = 90.0F;
+    public float rot = 0.0F;
     public bool check = false;
     public bool fired = false;
-    public bool DoMYtHING = false;
 	void Update () {
       
         
-        float rot = GetComponentInParent<Transform>().rotation.z;
+        rot = GetComponentInParent<Transform>().rotation.z;
         if (rot <= RePoint && fired == false)
         {
             check = true;
