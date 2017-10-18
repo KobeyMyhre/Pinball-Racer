@@ -27,13 +27,13 @@ Platform assembly: C:\Users\s179140\Desktop\PBRACE\Pinball-Racer\proto_Data\Mana
 Loading C:\Users\s179140\Desktop\PBRACE\Pinball-Racer\proto_Data\Managed\XInputDotNetPure.dll into Unity Child Domain
 Platform assembly: C:\Users\s179140\Desktop\PBRACE\Pinball-Racer\proto_Data\Managed\System.dll (this message is harmless)
 Platform assembly: C:\Users\s179140\Desktop\PBRACE\Pinball-Racer\proto_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.444 seconds
+- Completed reload, in  0.020 seconds
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.803820 ms
+UnloadTime: 0.751483 ms
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 2334 -> priority: 1 
-  Thread -> id: eb4 -> priority: 1 
-  Thread -> id: 1808 -> priority: 1 
-  Thread -> id: 1be0 -> priority: 1 
+  Thread -> id: 18d8 -> priority: 1 
+  Thread -> id: 26c8 -> priority: 1 
+  Thread -> id: 2a80 -> priority: 1 
+  Thread -> id: 2554 -> priority: 1 
