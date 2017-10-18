@@ -92,21 +92,22 @@ public class CarController : MonoBehaviour {
             DoRollBar(axleInfo.LeftWheel, axleInfo.RightWheel);
             if (state.Triggers.Left == 1)
             {
-                
+
                 axleInfo.LeftWheel.brakeTorque = brake * 50;
                 axleInfo.RightWheel.brakeTorque = brake * 50;
                 if (axleInfo.motor)
                 {
-
+                   
                     axleInfo.DoTrail(true);
                 }
-        }
+            }
+           
             else
             {
                 if (axleInfo.motor)
                 {
                     axleInfo.DoTrail(false);
-
+                   
                 }
                 axleInfo.LeftWheel.brakeTorque = 0;
                 axleInfo.RightWheel.brakeTorque = 0;
