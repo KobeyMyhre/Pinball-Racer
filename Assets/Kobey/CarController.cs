@@ -8,12 +8,15 @@ public class CarController : MonoBehaviour {
     GamePadState prev;
     PlayerIndex Pidx = PlayerIndex.One;
 
-
+    public float MotorTorque;
+    public float SteeringAngle;
+    public float BrakingTorque;
+    public float ReverseTorque;
     public List<AxleInfo> axleInfo;
-    public float maxMotorTorque;
-    public float maxSteeringAngle;
-    public float maxBrakingTorque;
-    public float maxReverseTorque;
+    private float maxMotorTorque;
+    private float maxSteeringAngle;
+    private float maxBrakingTorque;
+    private float maxReverseTorque;
     Rigidbody rb;
     public int Gear = 0;
     public float speed;
@@ -21,6 +24,8 @@ public class CarController : MonoBehaviour {
     public Transform centerOfGravity;
     WheelFrictionCurve DriftFriction;
     WheelFrictionCurve DefaultFriction;
+
+    public int drivingState;
 
     public float Motor;
     // Use this for initialization
@@ -34,14 +39,27 @@ public class CarController : MonoBehaviour {
                 DriftFriction = axleInfo.LeftWheel.forwardFriction;
             }
         }
-        DriftFriction.stiffness = 4;
-        DriftFriction.extremumSlip = 4;
-        DriftFriction.extremumValue = 1;
-        DriftFriction.asymptoteSlip = 2;
-        DriftFriction.asymptoteValue = 1;
+        //DriftFriction.stiffness = 4;
+        //DriftFriction.extremumSlip = 4;
+        //DriftFriction.extremumValue = 1;
+        //DriftFriction.asymptoteSlip = 2;
+        //DriftFriction.asymptoteValue = 1;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfGravity.localPosition;
-    }
+
+        DriftFriction.stiffness = 0.5f;
+        DriftFriction.extremumSlip = 0.2f;
+        DriftFriction.extremumValue = 1;
+        DriftFriction.asymptoteSlip = 0.1f;
+        DriftFriction.asymptoteValue = 1;
+
+
+        maxMotorTorque = MotorTorque;
+        maxSteeringAngle = SteeringAngle;
+        maxBrakingTorque = BrakingTorque;
+        maxReverseTorque = ReverseTorque;
+
+}
     public void ApplyWheelRotation(WheelCollider collider)
     {
 
@@ -54,6 +72,40 @@ public class CarController : MonoBehaviour {
         visualWheel.transform.localRotation = Quaternion.Euler(collider.rpm * Mathf.PI, collider.steerAngle, 0);
     }
 
+    void UpdateDriveMode()
+    {
+        switch (drivingState)
+        {
+            case 0:
+                for(int i =0; i < axleInfo.Count; i++)
+                {
+                    if(axleInfo[i].steering)
+                    {
+                        axleInfo[i].motor = false;
+                    }
+                    axleInfo[i].LeftWheel.suspensionDistance = 0.5f;
+                    axleInfo[i].RightWheel.suspensionDistance = 0.5f;
+                    axleInfo[i].LeftWheel.forwardFriction = DefaultFriction;
+                    axleInfo[i].RightWheel.forwardFriction = DefaultFriction;
+                   
+                    maxMotorTorque = MotorTorque;
+                }
+                break;
+            case 1:
+                for (int i = 0; i < axleInfo.Count; i++)
+                {
+                    
+                    axleInfo[i].LeftWheel.suspensionDistance = 1;
+                    axleInfo[i].RightWheel.suspensionDistance = 1;
+                    axleInfo[i].LeftWheel.forwardFriction = DriftFriction;
+                    axleInfo[i].RightWheel.forwardFriction = DriftFriction;
+                  
+                    maxMotorTorque = MotorTorque * .01f;
+                }
+                break;
+        }
+        
+    }
 
     private void Update()
     {
@@ -68,8 +120,17 @@ public class CarController : MonoBehaviour {
                 Gear = 0;
             }
         }
+        if (prev.Buttons.RightShoulder == ButtonState.Released && state.Buttons.RightShoulder == ButtonState.Pressed)
+        {
+            drivingState++;
+            if (drivingState >= 2)
+            {
+                drivingState = 0;
+            }
+            UpdateDriveMode();
+        }
         Gear = Mathf.Clamp(Gear, 0, 1);
-
+        drivingState = Mathf.Clamp(drivingState, 0, 1);
     }
 
     public float brake;
@@ -111,6 +172,7 @@ public class CarController : MonoBehaviour {
                 }
                 axleInfo.LeftWheel.brakeTorque = 0;
                 axleInfo.RightWheel.brakeTorque = 0;
+                
             }
             if (axleInfo.steering)
             {
@@ -124,7 +186,11 @@ public class CarController : MonoBehaviour {
             if(axleInfo.motor)
             {
 
-                
+                if (Motor > 0 || !axleInfo.RightWheel.isGrounded)
+                {
+                    rb.drag = 0;
+                }
+                else if(axleInfo.RightWheel.isGrounded) { rb.drag = 1.5f; }
 
 
 
