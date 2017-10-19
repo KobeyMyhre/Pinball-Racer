@@ -260,8 +260,22 @@ public class CarController : MonoBehaviour {
                     axleInfo.RightWheel.wheelDampingRate = 200;
                 }
 
-
-
+                if ( state.Buttons.RightShoulder == ButtonState.Pressed)
+                {
+                    axleInfo.LeftWheel.forwardFriction = DriftFriction;
+                    axleInfo.RightWheel.forwardFriction = DriftFriction;
+                    axleInfo.LeftWheel.sidewaysFriction = DriftFriction;
+                    axleInfo.RightWheel.sidewaysFriction = DriftFriction;
+                    
+                }
+                else
+                {
+                    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
+                    axleInfo.RightWheel.forwardFriction = DefaultFriction;
+                    axleInfo.LeftWheel.sidewaysFriction = DefaultFriction;
+                    axleInfo.RightWheel.sidewaysFriction = DefaultFriction;
+                }
+                
 
                 if (Gear == 0)
                 {
@@ -269,10 +283,7 @@ public class CarController : MonoBehaviour {
                     axleInfo.LeftWheel.motorTorque = Motor;
                     axleInfo.RightWheel.motorTorque = Motor;
 
-                    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
-                    axleInfo.RightWheel.forwardFriction = DefaultFriction;
-                   axleInfo.LeftWheel.sidewaysFriction = DefaultFriction;
-                    axleInfo.RightWheel.sidewaysFriction = DefaultFriction;
+                    
 
                 }
                 
@@ -281,10 +292,7 @@ public class CarController : MonoBehaviour {
                     
                     axleInfo.LeftWheel.motorTorque = reverse;
                     axleInfo.RightWheel.motorTorque = reverse;
-                   axleInfo.LeftWheel.forwardFriction = DriftFriction;
-                  axleInfo.RightWheel.forwardFriction = DriftFriction;
-                    axleInfo.LeftWheel.sidewaysFriction = DriftFriction;
-                    axleInfo.RightWheel.sidewaysFriction = DriftFriction;
+                  
                 }
             }
             
