@@ -59,19 +59,19 @@ public class CarController : MonoBehaviour {
                 DriftFriction = axleInfo.LeftWheel.forwardFriction;
             }
         }
-        //DriftFriction.stiffness = 4;
-        //DriftFriction.extremumSlip = 4;
-        //DriftFriction.extremumValue = 1;
-        //DriftFriction.asymptoteSlip = 2;
-        //DriftFriction.asymptoteValue = 1;
+        DriftFriction.stiffness = 1;
+        DriftFriction.extremumSlip = 5;
+        DriftFriction.extremumValue = 1;
+        DriftFriction.asymptoteSlip = 4;
+        DriftFriction.asymptoteValue = 1;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfGravity.localPosition;
 
-        DriftFriction.stiffness = 0.5f;
-        DriftFriction.extremumSlip = 0.2f;
-        DriftFriction.extremumValue = 1;
-        DriftFriction.asymptoteSlip = 0.1f;
-        DriftFriction.asymptoteValue = 1;
+        //DriftFriction.stiffness = 0.5f;
+        //DriftFriction.extremumSlip = 0.2f;
+        //DriftFriction.extremumValue = 1;
+        //DriftFriction.asymptoteSlip = 0.1f;
+        //DriftFriction.asymptoteValue = 1;
 
 
         maxMotorTorque = MotorTorque;
@@ -269,8 +269,11 @@ public class CarController : MonoBehaviour {
                     axleInfo.LeftWheel.motorTorque = Motor;
                     axleInfo.RightWheel.motorTorque = Motor;
 
-                    
-                    
+                    axleInfo.LeftWheel.forwardFriction = DefaultFriction;
+                    axleInfo.RightWheel.forwardFriction = DefaultFriction;
+                   axleInfo.LeftWheel.sidewaysFriction = DefaultFriction;
+                    axleInfo.RightWheel.sidewaysFriction = DefaultFriction;
+
                 }
                 
                 if (Gear == 1)
@@ -278,6 +281,10 @@ public class CarController : MonoBehaviour {
                     
                     axleInfo.LeftWheel.motorTorque = reverse;
                     axleInfo.RightWheel.motorTorque = reverse;
+                   axleInfo.LeftWheel.forwardFriction = DriftFriction;
+                  axleInfo.RightWheel.forwardFriction = DriftFriction;
+                    axleInfo.LeftWheel.sidewaysFriction = DriftFriction;
+                    axleInfo.RightWheel.sidewaysFriction = DriftFriction;
                 }
             }
             
