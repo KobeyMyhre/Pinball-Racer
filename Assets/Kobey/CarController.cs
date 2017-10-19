@@ -7,7 +7,7 @@ public class CarController : MonoBehaviour {
     GamePadState state;
     GamePadState prev;
     PlayerIndex Pidx = PlayerIndex.One;
-
+    public int PlayerNum;
     public float MotorTorque;
     public float SteeringAngle;
     public float BrakingTorque;
@@ -25,12 +25,32 @@ public class CarController : MonoBehaviour {
     WheelFrictionCurve DriftFriction;
     WheelFrictionCurve DefaultFriction;
 
+    public GameObject[] brakeLights;
+
     public int drivingState;
 
     public float Motor;
     // Use this for initialization
     void Start ()
     {
+        switch (PlayerNum)
+        {
+            case 1:
+                Pidx = PlayerIndex.One;
+                break;
+            case 2:
+                Pidx = PlayerIndex.Two;
+                break;
+            case 3:
+                Pidx = PlayerIndex.Three;
+                break;
+            case 4:
+                Pidx = PlayerIndex.Four;
+                break;
+        }
+        
+
+
         foreach (AxleInfo axleInfo in axleInfo)
         {
             if(axleInfo.motor)
@@ -69,7 +89,7 @@ public class CarController : MonoBehaviour {
         Quaternion rot;
         collider.GetWorldPose(out pos, out rot);
         visualWheel.transform.position = pos;
-        visualWheel.transform.localRotation = Quaternion.Euler(collider.rpm * Mathf.PI, collider.steerAngle, 0);
+        visualWheel.transform.localRotation = Quaternion.Euler(0, collider.steerAngle + 90, collider.rpm * Mathf.PI);
     }
 
     void UpdateDriveMode()
@@ -107,6 +127,31 @@ public class CarController : MonoBehaviour {
         
     }
 
+    void updateLights(bool onOff)
+    {
+        if(!onOff)
+        {
+            for (int i = 0; i < brakeLights.Length; i++)
+            {
+                if (brakeLights[i].activeSelf)
+                {
+                    brakeLights[i].SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < brakeLights.Length; i++)
+            {
+                if (!brakeLights[i].activeSelf)
+                {
+                    brakeLights[i].SetActive(true);
+                }
+            }
+        }
+
+    }
+
     private void Update()
     {
         prev = state;
@@ -119,6 +164,16 @@ public class CarController : MonoBehaviour {
             {
                 Gear = 0;
             }
+            switch (Gear)
+            {
+                case 0:
+                    updateLights(false);
+                    break;
+                case 1:
+                    updateLights(true);
+                    break;
+            }
+            
         }
         if (prev.Buttons.RightShoulder == ButtonState.Released && state.Buttons.RightShoulder == ButtonState.Pressed)
         {
@@ -127,13 +182,14 @@ public class CarController : MonoBehaviour {
             {
                 drivingState = 0;
             }
-            UpdateDriveMode();
+           // UpdateDriveMode();
         }
         Gear = Mathf.Clamp(Gear, 0, 1);
         drivingState = Mathf.Clamp(drivingState, 0, 1);
     }
 
     public float brake;
+    public bool CheckGround = true;
     // Update is called once per frame
     void FixedUpdate ()
     {
@@ -143,13 +199,20 @@ public class CarController : MonoBehaviour {
         //float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
 
         Motor = maxMotorTorque * state.Triggers.Right;
+        
         float steering = maxSteeringAngle * state.ThumbSticks.Left.X;
         float reverse = maxReverseTorque * -state.Triggers.Right;
         maxBrakingTorque = rb.mass * rb.velocity.magnitude;
         brake = maxBrakingTorque * state.Triggers.Left;
         foreach (AxleInfo axleInfo in axleInfo)
         {
+            if(CheckGround)
+            {
+                axleInfo.isAxleGrounded = axleInfo.LeftWheel.isGrounded && axleInfo.RightWheel.isGrounded;
+            }
+           
             
+           
             DoRollBar(axleInfo.LeftWheel, axleInfo.RightWheel);
             if (state.Triggers.Left == 1)
             {
@@ -180,8 +243,6 @@ public class CarController : MonoBehaviour {
                 axleInfo.LeftWheel.steerAngle = steering;
                 axleInfo.RightWheel.steerAngle = steering;
                
-              
-                
             }
             if(axleInfo.motor)
             {
@@ -189,8 +250,15 @@ public class CarController : MonoBehaviour {
                 if (Motor > 0 || !axleInfo.RightWheel.isGrounded)
                 {
                     rb.drag = 0;
+                    axleInfo.LeftWheel.wheelDampingRate = 0.25f;
+                    axleInfo.RightWheel.wheelDampingRate = 0.25f;
                 }
-                else if(axleInfo.RightWheel.isGrounded) { rb.drag = 1.5f; }
+                else if(axleInfo.RightWheel.isGrounded)
+                {
+                    rb.drag = 1.5f;
+                    axleInfo.LeftWheel.wheelDampingRate = 200;
+                    axleInfo.RightWheel.wheelDampingRate = 200;
+                }
 
 
 
@@ -200,11 +268,14 @@ public class CarController : MonoBehaviour {
                     
                     axleInfo.LeftWheel.motorTorque = Motor;
                     axleInfo.RightWheel.motorTorque = Motor;
+
+                    
                     
                 }
                 
                 if (Gear == 1)
                 {
+                    
                     axleInfo.LeftWheel.motorTorque = reverse;
                     axleInfo.RightWheel.motorTorque = reverse;
                 }
@@ -255,6 +326,7 @@ public class CarController : MonoBehaviour {
         public TrailRenderer Rtrail;
         public WheelCollider LeftWheel;
         public WheelCollider RightWheel;
+        public bool isAxleGrounded;
         public bool motor;
         public bool steering;
         float timer = 1;
