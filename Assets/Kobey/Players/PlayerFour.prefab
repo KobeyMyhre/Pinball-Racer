@@ -420,6 +420,7 @@ GameObject:
   - component: {fileID: 54576063655912806}
   - component: {fileID: 114783285137413050}
   - component: {fileID: 114208852943620248}
+  - component: {fileID: 65159038100670532}
   m_Layer: 0
   m_Name: PlayerFour
   m_TagString: Player
@@ -1342,6 +1343,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.1756415, y: 2.0926101, z: 4.0792756}
   m_Center: {x: 0.16803111, y: 0.9850661, z: -1.5400838e-16}
+--- !u!65 &65159038100670532
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1886706242864452}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65184553302956552
 BoxCollider:
   m_ObjectHideFlags: 1
