@@ -35,7 +35,7 @@ public class CameraFollow : MonoBehaviour {
         {
             gameObject.transform.parent = null;
         }
-        transform.position = Vector3.Lerp(transform.position, transform.position + new Vector3(0, 25, 0), Time.deltaTime/3);
+        transform.position = Vector3.Lerp(transform.position, transform.position + new Vector3(0, 40, 0), Time.deltaTime);
         transform.LookAt(player.transform);
     }
 
