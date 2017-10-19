@@ -106,4 +106,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boostGO: {fileID: 1152107763075600, guid: 9b4d0ab1feb9a9046a4ffaa78a77c3b9, type: 2}
-  boostAmount: 5000
+  boostAmount: 4000
