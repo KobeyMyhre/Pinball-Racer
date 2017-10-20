@@ -9,6 +9,7 @@ public class SpeedBoost : MonoBehaviour {
     BoxCollider coll;
     float timer = 0f;
     public float boostAmount = 5000f;
+    AudioSource yeehaw;
 
     // Use this for initialization
     void Start()
@@ -16,21 +17,23 @@ public class SpeedBoost : MonoBehaviour {
         boostGO = Instantiate(boostGO, transform);
         parts = boostGO.GetComponentsInChildren<ParticleSystem>();
         coll = GetComponent<BoxCollider>();
+        yeehaw = GetComponent<AudioSource>();
     }
 
-    void ParticlePlay()
+    void EffectsPlay()
     {
         for (int i = 0; i < parts.Length; ++i)
         {
             parts[i].Play();
         }
+        yeehaw.Play();
         coll.enabled = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
         other.GetComponentInParent<Rigidbody>().AddForce(transform.forward * boostAmount, ForceMode.Impulse);
-        ParticlePlay();
+        EffectsPlay();
     }
 
     // Update is called once per frame

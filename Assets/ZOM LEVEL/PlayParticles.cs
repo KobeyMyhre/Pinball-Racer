@@ -6,7 +6,8 @@ public class PlayParticles : MonoBehaviour {
 
     public GameObject partsGO;
     ParticleSystem[] parts;
-    BoxCollider coll;    
+    BoxCollider coll;
+    AudioSource sound;
 
     // Use this for initialization
     void Start()
@@ -14,20 +15,26 @@ public class PlayParticles : MonoBehaviour {
         partsGO = Instantiate(partsGO, transform);
         parts = partsGO.GetComponentsInChildren<ParticleSystem>();
         coll = GetComponent<BoxCollider>();
+        if (GetComponent<AudioSource>())
+            sound = GetComponent<AudioSource>();
     }
 
-    void ParticlePlay()
+    void EffectsPlay()
     {
         for (int i = 0; i < parts.Length; ++i)
         {
             parts[i].Play();
         }
+
+        if (sound)
+            sound.Play();
+
         coll.enabled = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
-            ParticlePlay();
+            EffectsPlay();
     }
 }
