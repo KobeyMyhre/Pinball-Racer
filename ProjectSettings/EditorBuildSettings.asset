@@ -9,5 +9,8 @@ EditorBuildSettings:
     path: Assets/ZOM LEVEL/TerrainLevel.unity
     guid: 4007fd1141ea8514d935db88fef1a757
   - enabled: 1
+    path: Assets/RaphaelStuff/Scenes/MainMenu.unity
+    guid: 3cb2eeefe1b6173448ec04acee7da7a9
+  - enabled: 1
     path: Assets/ZOM LEVEL/MainLevel.unity
     guid: d26e0bccef114b048a9511cb33446632
