@@ -7,6 +7,7 @@ public class LaunchOther : MonoBehaviour {
     public GameObject explosionGO;
     ParticleSystem[] parts;
     SphereCollider coll;
+    AudioSource sound;
     float timer = 0f;
 
 	// Use this for initialization
@@ -14,6 +15,9 @@ public class LaunchOther : MonoBehaviour {
         explosionGO = Instantiate(explosionGO, transform);
         parts = explosionGO.GetComponentsInChildren<ParticleSystem>();
         coll = GetComponent<SphereCollider>();
+
+        if (GetComponent<AudioSource>())
+            sound = GetComponent<AudioSource>();
 	}
 
     void Explode()
@@ -21,7 +25,8 @@ public class LaunchOther : MonoBehaviour {
         for (int i = 0; i < parts.Length; ++i)
         {
             parts[i].Play();
-        }        
+        }
+        sound.Play();        
         coll.enabled = false;
     }    
 
