@@ -18,9 +18,9 @@ public class ResetPlayer : MonoBehaviour {
             Application.Quit();
         }
 
-        if (Input.GetKey(KeyCode.R))
-        {
-            transform.position = start;
-        }
+        //if (Input.GetKey(KeyCode.R))
+        //{
+        //    transform.position = start;
+        //}
     }
 }

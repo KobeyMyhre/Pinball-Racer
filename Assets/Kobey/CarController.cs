@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XInputDotNetPure;
 public class CarController : MonoBehaviour {
-
+    AudioSource[] soundFX;
     GamePadState state;
     GamePadState prev;
     PlayerIndex Pidx = PlayerIndex.One;
@@ -30,9 +30,21 @@ public class CarController : MonoBehaviour {
     public int drivingState;
 
     public float Motor;
+
+    Vector3 startPos;
+    Quaternion startRot;
+    void ResetPlayer()
+    {
+        transform.position = startPos;
+        transform.rotation = startRot;
+    }
+
     // Use this for initialization
     void Start ()
     {
+        startPos = transform.position;
+        startRot = transform.rotation;
+        soundFX = GetComponents<AudioSource>();
         switch (PlayerNum)
         {
             case 1:
@@ -56,7 +68,9 @@ public class CarController : MonoBehaviour {
             if(axleInfo.motor)
             {
                 DefaultFriction = axleInfo.LeftWheel.forwardFriction;
+                DefaultFriction.stiffness = 2;
                 DriftFriction = axleInfo.LeftWheel.forwardFriction;
+                
             }
         }
         DriftFriction.stiffness = 1;
@@ -186,6 +200,21 @@ public class CarController : MonoBehaviour {
         }
         Gear = Mathf.Clamp(Gear, 0, 1);
         drivingState = Mathf.Clamp(drivingState, 0, 1);
+
+        if (prev.Buttons.Back == ButtonState.Released && state.Buttons.Back == ButtonState.Pressed)
+        {
+            soundFX[0].Play();
+            ResetPlayer();
+        }
+        if (prev.Buttons.B == ButtonState.Released && state.Buttons.B == ButtonState.Pressed)
+        {
+            if(!soundFX[2].isPlaying)
+                soundFX[2].Play();
+           
+            
+
+        }
+
     }
 
     public float brake;
@@ -246,30 +275,49 @@ public class CarController : MonoBehaviour {
             }
             if(axleInfo.motor)
             {
-
+                //if (Motor > 0)
+                //{
+                //    if(!soundFX[2].isPlaying)
+                //        soundFX[2].Play();
+                //}
+                //else
+                //{
+                //    if (!soundFX[1].isPlaying)
+                //        soundFX[1].Play();
+                //}
                 if (Motor > 0 || !axleInfo.RightWheel.isGrounded)
                 {
                     rb.drag = 0;
+                    
                     axleInfo.LeftWheel.wheelDampingRate = 0.25f;
                     axleInfo.RightWheel.wheelDampingRate = 0.25f;
                 }
                 else if(axleInfo.RightWheel.isGrounded)
                 {
-                    rb.drag = 1.5f;
+                    rb.drag = .5f;
                     axleInfo.LeftWheel.wheelDampingRate = 200;
                     axleInfo.RightWheel.wheelDampingRate = 200;
                 }
 
                 if ( state.Buttons.RightShoulder == ButtonState.Pressed)
                 {
+                    if(rb.velocity.magnitude > 15 && axleInfo.isAxleGrounded)
+                    {
+                        if (!soundFX[1].isPlaying)
+                            soundFX[1].Play();
+                    }
+                    axleInfo.DoTrail(true);
                     axleInfo.LeftWheel.forwardFriction = DriftFriction;
-                    axleInfo.RightWheel.forwardFriction = DriftFriction;
-                    axleInfo.LeftWheel.sidewaysFriction = DriftFriction;
-                    axleInfo.RightWheel.sidewaysFriction = DriftFriction;
+                   axleInfo.RightWheel.forwardFriction = DriftFriction;
+                   axleInfo.LeftWheel.sidewaysFriction = DriftFriction;
+                   axleInfo.RightWheel.sidewaysFriction = DriftFriction;
                     
                 }
                 else
                 {
+                    axleInfo.DoTrail(false);
+                    if (soundFX[1].isPlaying)
+                        soundFX[1].Stop();
                     axleInfo.LeftWheel.forwardFriction = DefaultFriction;
                     axleInfo.RightWheel.forwardFriction = DefaultFriction;
                     axleInfo.LeftWheel.sidewaysFriction = DefaultFriction;
@@ -344,34 +392,40 @@ public class CarController : MonoBehaviour {
         public bool isAxleGrounded;
         public bool motor;
         public bool steering;
-        float timer = 1;
+        
         public void DoTrail(bool OnOff)
         {
             if(OnOff)
             {
-                timer = 1;
-                if (LeftWheel.isGrounded)
-                {
-                    Ltrail.enabled = true;
-                }
-                else
-                {
-                  
-                    Ltrail.enabled = false;
-                }
-                if (RightWheel.isGrounded)
-                {
+               
+               
                    
-                    Rtrail.enabled = true;
-                }
-                else
-                {
-                   
-                    Rtrail.enabled = false;
-                }
+                    if (LeftWheel.isGrounded)
+                    {
+                      
+                        Ltrail.enabled = true;
+                    }
+                    else
+                    {
+
+                        Ltrail.enabled = false;
+                    }
+                    if (RightWheel.isGrounded)
+                    {
+                        
+                        Rtrail.enabled = true;
+                    }
+                    else
+                    {
+
+                        Rtrail.enabled = false;
+                    }
+                
+               
             }
             else
             {
+              
                 //if(Ltrail.enabled == true)
                 //{
                 //    var SpawnLine = Instantiate(Ltrail);
