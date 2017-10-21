@@ -147,7 +147,28 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 82146056911098956, guid: c66ce2b09238236489704fa0cf0a0a97,
+        type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: a93c2599447ff7847a1803d16cb15d15, type: 3}
+    - target: {fileID: 82146056911098956, guid: c66ce2b09238236489704fa0cf0a0a97,
+        type: 2}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82858785063148518, guid: c66ce2b09238236489704fa0cf0a0a97,
+        type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 34f0733916d145e42b933e8cb0ea7a26, type: 3}
+    - target: {fileID: 82858785063148518, guid: c66ce2b09238236489704fa0cf0a0a97,
+        type: 2}
+      propertyPath: m_Volume
+      value: 0.72
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 82751839273830330, guid: c66ce2b09238236489704fa0cf0a0a97, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: c66ce2b09238236489704fa0cf0a0a97, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &115323356
@@ -185,8 +206,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000091553, y: 15.35}
-  m_SizeDelta: {x: -733.3, y: -477.1}
+  m_AnchoredPosition: {x: -0.000015259, y: -0.000030518}
+  m_SizeDelta: {x: -1510.3, y: -987.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &115323358
 MonoBehaviour:
@@ -199,7 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c96a3e4f4915bf499e51cab3f0a6a4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainlevel: 
+  mainlevel: MainLevel
 --- !u!114 &115323359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,8 +420,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -191}
-  m_SizeDelta: {x: -760.4, y: -467.3}
+  m_AnchoredPosition: {x: 4.3, y: -342}
+  m_SizeDelta: {x: -1518.9, y: -988.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &354270101
 MonoBehaviour:
@@ -498,6 +519,86 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77c07e3b8fae244478185f87ee500e0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &377396460
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 377396461}
+  - component: {fileID: 377396463}
+  - component: {fileID: 377396462}
+  m_Layer: 5
+  m_Name: Credits
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &377396461
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 377396460}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2053545047}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -577.2, y: -389.3}
+  m_SizeDelta: {x: -1238.4, y: -836.6}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &377396462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 377396460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 48
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 200
+    m_Alignment: 6
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'AIE Physics Project
+
+    Kobey M.
+
+    Zomawia S.
+
+    Raphael M.'
+--- !u!222 &377396463
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 377396460}
 --- !u!1 &941673887
 GameObject:
   m_ObjectHideFlags: 0
@@ -619,8 +720,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000076294, y: 145}
-  m_SizeDelta: {x: 684.1, y: 176.4}
+  m_AnchoredPosition: {x: 0, y: 293.12}
+  m_SizeDelta: {x: 1602.3, y: 493.76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1195156468
 MonoBehaviour:
@@ -643,22 +744,18 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 40
+    m_FontSize: 300
     m_FontStyle: 3
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 40
+    m_MaxSize: 300
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Hey Howdy Hi
-
-    Im a truck
-
-    bye bye'
+  m_Text: YEEHAW
 --- !u!222 &1195156469
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -965,6 +1062,7 @@ RectTransform:
   - {fileID: 115323357}
   - {fileID: 354270100}
   - {fileID: 1195156467}
+  - {fileID: 377396461}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

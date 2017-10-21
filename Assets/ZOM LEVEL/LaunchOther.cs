@@ -8,6 +8,7 @@ public class LaunchOther : MonoBehaviour {
     ParticleSystem[] parts;
     SphereCollider coll;
     AudioSource sound;
+    public float force = 2500f;
     float timer = 0f;
 
 	// Use this for initialization
@@ -32,7 +33,7 @@ public class LaunchOther : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        other.GetComponentInParent<Rigidbody>().AddExplosionForce(2500f, transform.position, 10f, 5f, ForceMode.Impulse);
+        other.GetComponentInParent<Rigidbody>().AddExplosionForce(force, transform.position, 10f, 5f, ForceMode.Impulse);
         Explode();
     }
 
